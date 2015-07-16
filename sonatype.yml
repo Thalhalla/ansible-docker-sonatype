@@ -1,0 +1,20 @@
+---
+- name: sonatype
+  vars:
+     port_contents: "{{ lookup('file', 'port') }}"
+     NAME_contents: "{{ lookup('file', 'NAME') }}"
+  hosts: "{{ NAME_contents }}"
+  sudo: True
+  tasks:
+  - name: Sonatype
+    docker:
+      name: "{{ NAME_contents }}"
+      image: sonatype/nexus:latest
+      state: reloaded
+      restart_policy: always
+      ports:
+      - "{{ port_contents }}"
+      volumes:
+        - '/exports/sonatype-work:/sonatype-work'
+      env:
+          MAX_HEAP: 768m
